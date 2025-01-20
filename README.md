@@ -62,10 +62,30 @@ GET /files
 Интерфейс на MinIO: http://localhost:9001
 Потребител: minioadmin
 Парола: minioadmin
+
+
+
+4. Примерни API заявки( чрез cURL )
+
+
+Качване на файл:
+curl -X POST -H "Authorization: Bearer <TOKEN>" -F "file=@example.txt" http://localhost:5000/upload
+
+
+Сваляне на файл:
+curl -X GET -H "Authorization: Bearer <TOKEN>" http://localhost:5000/download/<file_id>
+
+
+Обновяване на файл:
+curl -X PUT -H "Authorization: Bearer <TOKEN>" -F "file=@new_example.txt" http://localhost:5000/update/<file_id>
+
+
+Изтриване на файл:
+curl -X DELETE -H "Authorization: Bearer <TOKEN>" http://localhost:5000/delete/<file_id>
+
+
 Структура на проекта
-bash
-Copy
-Edit
+
 file_management/
 ├── app/
 │   ├── app.py               # Основен файл на Flask приложението
