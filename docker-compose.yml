@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  minio:
+    image: minio/minio
+    container_name: minio
+    environment:
+      MINIO_ROOT_USER: "minioadmin"
+      MINIO_ROOT_PASSWORD: "minioadmin"
+    command: server /data
+    ports:
+      - "9000:9000"  
+      - "9001:9001"  
+    volumes:
+      - minio_data:/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    environment:
+      KEYCLOAK_ADMIN: "admin"
+      KEYCLOAK_ADMIN_PASSWORD: "admin"
+    command: start-dev
+    ports:
+      - "8080:8080" 
+
+  app:
+    build:
+      context: ./app
+    container_name: file_manager_app
+    environment:
+      FLASK_RUN_HOST: "0.0.0.0"
+      FLASK_RUN_PORT: "5000"
+      MINIO_ENDPOINT: "minio:9000"  
+      MINIO_ACCESS_KEY: "minioadmin"
+      MINIO_SECRET_KEY: "minioadmin"
+      MINIO_BUCKET: "files"  
+      KEYCLOAK_URL: "http://keycloak:8080"  
+    depends_on:
+      - minio
+      - keycloak
+    ports:
+      - "5000:5000" 
+volumes:
+  minio_data:
